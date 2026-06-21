@@ -2,28 +2,43 @@
 
 from __future__ import annotations
 
-import math
+import json
 from dataclasses import dataclass, field
+from pathlib import Path
+
+import numpy as np
 
 from mlip_smoothness_eval.checks.base import CheckResult
 
-# Direction of "good" for each metric and a soft threshold for the LJ-style
-# ideal. Used purely for the HTML scorecard coloring; the numbers are the truth.
-_METRIC_INFO: dict[str, tuple[str, float]] = {
-    "nonconservativity_rmse": ("lower", 1e-3),
-    "nonconservativity_rel": ("lower", 1e-3),
-    "scan_force_energy_inconsistency": ("lower", 1e-2),
-    "scan_energy_roughness": ("lower", 1e3),
-    "cutoff_energy_spike_ratio": ("lower", 10.0),
-    "cutoff_force_spike_ratio": ("lower", 10.0),
-    "force_jacobian_asymmetry": ("lower", 1e-3),
-    "diatomic_tortuosity": ("one", 1.5),
-    "diatomic_energy_jump": ("lower", 1e-2),
-    "diatomic_force_flips": ("one", 2.0),
-    "nve_final_drift_per_atom": ("lower", 1e-2),
-    "nve_max_drift_per_atom": ("lower", 1e-2),
-    "nve_drift_std_per_atom": ("lower", 1e-2),
-}
+
+def _jsonable(value: object) -> object:
+    """Recursively coerce numpy arrays/scalars into JSON-native types."""
+    if isinstance(value, np.ndarray):
+        return value.tolist()
+    if isinstance(value, np.generic):
+        return value.item()
+    if isinstance(value, dict):
+        return {k: _jsonable(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_jsonable(v) for v in value]
+    return value
+
+# Metric display order for the HTML scorecard.
+_METRIC_ORDER: tuple[str, ...] = (
+    "nonconservativity_rmse",
+    "nonconservativity_rel",
+    "scan_force_energy_inconsistency",
+    "scan_energy_roughness",
+    "cutoff_energy_spike_ratio",
+    "cutoff_force_spike_ratio",
+    "force_jacobian_asymmetry",
+    "diatomic_tortuosity",
+    "diatomic_energy_jump",
+    "diatomic_force_flips",
+    "nve_final_drift_per_atom",
+    "nve_max_drift_per_atom",
+    "nve_drift_std_per_atom",
+)
 
 
 def _aggregate(results: list[CheckResult]) -> dict[str, float]:
@@ -56,6 +71,36 @@ class SmoothnessReport:
     @property
     def metrics(self) -> dict[str, float]:
         return _aggregate(self.results)
+
+    # ---- serialization -----------------------------------------------------
+    def to_dict(self) -> dict[str, object]:
+        """Plain-data view: aggregated metrics + each probe's metrics and curve trace.
+
+        Model objects and the heavy ``frames`` arrays (only needed for gifs) are
+        dropped so the result is small and JSON-serializable for cross-model
+        comparison.
+        """
+        return {
+            "model_name": self.model_name,
+            "metrics": self.metrics,
+            "notes": list(self.notes),
+            "checks": [
+                {
+                    "name": r.name,
+                    "metrics": _jsonable(r.metrics),
+                    "meta": _jsonable(r.meta),
+                    "trace": {k: _jsonable(v) for k, v in r.trace.items() if k != "frames"},
+                }
+                for r in self.results
+            ],
+        }
+
+    def save(self, path: str | Path) -> Path:
+        """Write :meth:`to_dict` to ``path`` as JSON; returns the path."""
+        path = Path(path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(self.to_dict(), indent=2))
+        return path
 
     # ---- lookups -----------------------------------------------------------
     def _find(self, name: str, symbol: str | None = None) -> CheckResult:
@@ -104,7 +149,7 @@ class SmoothnessReport:
 
     def to_html(self) -> str:
         rows = []
-        for key in _METRIC_INFO:
+        for key in _METRIC_ORDER:
             if key not in self.metrics:
                 continue
             val = self.metrics[key]
@@ -122,8 +167,7 @@ class SmoothnessReport:
             "<table style='border-collapse:collapse;width:100%;font-size:13px'>"
             "<tr style='text-align:left;border-bottom:1px solid #B4B4B4'>"
             "<th style='padding:4px 8px'>metric</th>"
-            "<th style='padding:4px 8px;text-align:right'>value</th>"
-            "<th style='padding:4px 8px'>verdict</th></tr>"
+            "<th style='padding:4px 8px;text-align:right'>value</th></tr>"
             + "".join(rows)
             + "</table>"
             + notes_html
@@ -131,21 +175,8 @@ class SmoothnessReport:
         )
 
     def _row_html(self, key: str, val: float) -> str:
-        direction, thresh = _METRIC_INFO[key]
-        if math.isnan(val):
-            good, label, color = False, "n/a", "#7B7B7B"
-        else:
-            if direction == "lower":
-                good = val <= thresh
-            elif direction == "one":
-                good = abs(val - 1.0) <= (thresh - 1.0)
-            else:
-                good = True
-            label = "smooth" if good else "check"
-            color = "#2E6E4E" if good else "#B9605B"
         return (
             "<tr style='border-bottom:1px solid #E2E0D8'>"
             f"<td style='padding:4px 8px;font-family:ui-monospace,Menlo,monospace'>{key}</td>"
-            f"<td style='padding:4px 8px;text-align:right;font-family:ui-monospace,Menlo,monospace'>{val:.4g}</td>"
-            f"<td style='padding:4px 8px;color:{color};font-weight:600'>{label}</td></tr>"
+            f"<td style='padding:4px 8px;text-align:right;font-family:ui-monospace,Menlo,monospace'>{val:.4g}</td></tr>"
         )
