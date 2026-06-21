@@ -70,10 +70,3 @@ def apply_theme(fig: go.Figure, *, height: int = 420) -> go.Figure:
     )
     fig.update_layout(title=None)
     return fig
-
-
-PLOTLY_CONFIG = {
-    "responsive": False,
-    "displayModeBar": "hover",
-    "displaylogo": False,
-}

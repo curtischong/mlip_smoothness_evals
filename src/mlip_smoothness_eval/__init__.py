@@ -22,7 +22,6 @@ from mlip_smoothness_eval.checks import (
 )
 from mlip_smoothness_eval.report import SmoothnessReport
 from mlip_smoothness_eval.runner import evaluate_smoothness
-from mlip_smoothness_eval.utils import resolve_path
 
 __version__ = "0.1.0"
 
@@ -32,7 +31,6 @@ __all__ = [
     "CheckResult",
     "structures",
     "predict",
-    "resolve_path",
     "nonconservativity",
     "displacement_scan",
     "cutoff_smoothness",

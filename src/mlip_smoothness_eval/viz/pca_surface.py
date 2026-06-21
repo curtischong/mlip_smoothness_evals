@@ -19,7 +19,7 @@ from mlip_smoothness_eval.structures import with_positions
 from mlip_smoothness_eval.viz.theme import SEQUENTIAL
 
 
-def pca_energy_surface_data(
+def pca_energy_surface(
     model: object,
     state: SimState,
     *,
@@ -27,12 +27,8 @@ def pca_energy_surface_data(
     sigma: float = 0.15,
     grid: int = 60,
     seed: int = 0,
-) -> dict:
-    """Compute the PCA energy-surface mesh + sample scatter (no plotting).
-
-    Returns a dict of plain Python lists/floats so it can be serialized and the
-    figure rebuilt offline (e.g. for a results page) without re-running the model.
-    """
+) -> go.Figure:
+    """Build the PCA energy-surface figure for ``model`` around ``state``."""
     import torch
 
     rng = np.random.default_rng(seed)
@@ -57,24 +53,10 @@ def pca_energy_surface_data(
     mesh_x, mesh_y = np.meshgrid(gx, gy)
     mesh_z = griddata(coords, energies, (mesh_x, mesh_y), method="cubic")
     var = pca.explained_variance_ratio_
-    return {
-        "mesh_x": mesh_x.tolist(),
-        "mesh_y": mesh_y.tolist(),
-        "mesh_z": np.where(np.isfinite(mesh_z), mesh_z, None).tolist(),
-        "coords": coords.tolist(),
-        "energies": energies.tolist(),
-        "var": [float(var[0]), float(var[1])],
-    }
 
-
-def pca_surface_from_data(data: dict) -> go.Figure:
-    """Rebuild the PCA energy-surface figure from :func:`pca_energy_surface_data`."""
-    coords = np.asarray(data["coords"])
-    energies = np.asarray(data["energies"])
-    var = data["var"]
     fig = go.Figure(
         go.Surface(
-            x=data["mesh_x"], y=data["mesh_y"], z=data["mesh_z"],
+            x=mesh_x, y=mesh_y, z=mesh_z,
             colorscale=SEQUENTIAL, colorbar=dict(title="energy (eV)"),
         )
     )
@@ -97,19 +79,3 @@ def pca_surface_from_data(data: dict) -> go.Figure:
         font=dict(color="#1D272A", size=12),
     )
     return fig
-
-
-def pca_energy_surface(
-    model: object,
-    state: SimState,
-    *,
-    n_samples: int = 400,
-    sigma: float = 0.15,
-    grid: int = 60,
-    seed: int = 0,
-) -> go.Figure:
-    """Build the PCA energy-surface figure for ``model`` around ``state``."""
-    data = pca_energy_surface_data(
-        model, state, n_samples=n_samples, sigma=sigma, grid=grid, seed=seed
-    )
-    return pca_surface_from_data(data)

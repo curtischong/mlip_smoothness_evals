@@ -94,7 +94,7 @@ def predict(model: object, state: SimState) -> Prediction:
     )
 
 
-def energy_value(model: object, state: SimState) -> float:
+def _energy_value(model: object, state: SimState) -> float:
     """Scalar model energy at ``state`` (grad left on so force-via-autograd models run)."""
     work, _ = _grad_positions(state)
     with torch.enable_grad():
@@ -142,13 +142,13 @@ def _fd_conservative_forces(model: object, state: SimState, h: float) -> Tensor:
             plus[i, d] += h
             minus = base.clone()
             minus[i, d] -= h
-            e_plus = energy_value(model, with_positions(state, plus))
-            e_minus = energy_value(model, with_positions(state, minus))
+            e_plus = _energy_value(model, with_positions(state, plus))
+            e_minus = _energy_value(model, with_positions(state, minus))
             forces[i, d] = -(e_plus - e_minus) / (2.0 * h)
     return forces
 
 
-def model_forces_fn(model: object, state: SimState):
+def _model_forces_fn(model: object, state: SimState):
     """Return ``(flat_pos -> flat model forces, flat_pos0)`` for an autograd Jacobian.
 
     The Jacobian is taken of the model's *own* force head w.r.t. positions, so a
@@ -182,7 +182,7 @@ def force_jacobian(
         raise ValueError(f"method must be one of {METHODS}, got {method!r}")
 
     if method in ("auto", "autograd"):
-        forces_fn, flat0 = model_forces_fn(model, state)
+        forces_fn, flat0 = _model_forces_fn(model, state)
         flat = flat0.clone().requires_grad_(True)
         with torch.enable_grad():
             f0 = forces_fn(flat)
