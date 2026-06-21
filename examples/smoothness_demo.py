@@ -76,3 +76,5 @@ print("wrote displacement_scan.gif")
 
 # %%
 report.pca_surface(n_samples=400)
+
+# %%

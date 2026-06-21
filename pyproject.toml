@@ -18,8 +18,15 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-examples = ["mace-torch>=0.3.16"]
-dev = ["pytest>=8.0"]
+mace = ["mace-torch>=0.3.16"]
+# phono3py>=4.0.0: some older 3.x sdists (e.g. 3.2.0) fail to build and break uv resolution.
+mattersim = ["mattersim>=1.2.5", "phono3py>=4.0.0"]
+metatomic = ["metatomic-torchsim>=0.1.1", "metatomic-ase>=0.1.0", "upet>=0.2.0"]
+orb = ["orb-models>=0.6.2"]
+sevenn = ["sevenn[torchsim]>=0.12.1"]
+nequip = ["nequip>=0.17.1"]
+nequix = ["nequix[torch-sim]>=0.4.5"]
+fairchem = ["fairchem-core>=2.20.0"]
 
 [build-system]
 requires = ["hatchling"]
@@ -28,7 +35,21 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["src/mlip_smoothness_eval"]
 
+[dependency-groups]
+dev = ["pytest>=8.0"]
+
 [tool.uv]
+default-groups = ["dev"]
+# make these dependencies mutually exclusive since they use incompatible e3nn versions
+# see https://docs.astral.sh/uv/concepts/projects/config/#conflicting-dependencies for more details
+conflicts = [
+    [{ extra = "fairchem" }, { extra = "mace" }],
+    [{ extra = "mace" }, { extra = "mattersim" }],
+    [{ extra = "mace" }, { extra = "nequip" }],
+    [{ extra = "mace" }, { extra = "nequix" }],
+    [{ extra = "mace" }, { extra = "sevenn" }],
+]
+
 # CPU/GPU torch from the PyTorch cu128 index (wheels run on CPU too, so the same
 # environment covers the LJ unit tests on CPU and the MACE demo on GPU).
 [tool.uv.sources]
