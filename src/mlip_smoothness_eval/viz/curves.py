@@ -6,8 +6,8 @@ import numpy as np
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-from ..checks.base import CheckResult
-from .theme import EDITORIAL_8, apply_theme
+from mlip_smoothness_eval.checks.base import CheckResult
+from mlip_smoothness_eval.viz.theme import EDITORIAL_8, apply_theme
 
 
 def _two_panel(x, y_top, y_bot, *, xlabel, top_label, bot_label, height=520) -> go.Figure:

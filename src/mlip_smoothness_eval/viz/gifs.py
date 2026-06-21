@@ -14,7 +14,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from ..checks.base import CheckResult
+from mlip_smoothness_eval.checks.base import CheckResult
 
 _SWEEP_CHECKS = {"diatomic", "displacement_scan", "cutoff_smoothness"}
 

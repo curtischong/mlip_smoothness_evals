@@ -11,8 +11,8 @@ from __future__ import annotations
 
 from torch_sim.state import SimState
 
-from .base import CheckResult
-from .base import force_jacobian as _force_jacobian
+from mlip_smoothness_eval.checks.base import CheckResult
+from mlip_smoothness_eval.checks.base import force_jacobian as _force_jacobian
 
 
 def force_jacobian_asymmetry(

@@ -14,9 +14,9 @@ from scipy.interpolate import griddata
 from sklearn.decomposition import PCA
 from torch_sim.state import SimState
 
-from ..checks.base import predict
-from ..structures import with_positions
-from .theme import SEQUENTIAL
+from mlip_smoothness_eval.checks.base import predict
+from mlip_smoothness_eval.structures import with_positions
+from mlip_smoothness_eval.viz.theme import SEQUENTIAL
 
 
 def pca_energy_surface_data(

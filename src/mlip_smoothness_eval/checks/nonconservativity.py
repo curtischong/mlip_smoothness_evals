@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from torch_sim.state import SimState
 
-from .base import CheckResult, conservative_forces, predict
+from mlip_smoothness_eval.checks.base import CheckResult, conservative_forces, predict
 
 
 def nonconservativity(model: object, state: SimState, *, method: str = "auto") -> CheckResult:

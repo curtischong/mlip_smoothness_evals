@@ -13,7 +13,7 @@ import torch_sim as ts
 from torch_sim.state import SimState
 from torch_sim.units import MetalUnits
 
-from .base import CheckResult
+from mlip_smoothness_eval.checks.base import CheckResult
 
 
 def nve_energy_drift(

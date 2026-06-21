@@ -5,7 +5,7 @@ from __future__ import annotations
 import torch
 from torch_sim.state import SimState
 
-from .checks import (
+from mlip_smoothness_eval.checks import (
     cutoff_smoothness,
     diatomic_smoothness,
     displacement_scan,
@@ -13,8 +13,8 @@ from .checks import (
     nonconservativity,
     nve_energy_drift,
 )
-from .report import SmoothnessReport
-from .structures import random_crystal
+from mlip_smoothness_eval.report import SmoothnessReport
+from mlip_smoothness_eval.structures import random_crystal
 
 
 def evaluate_smoothness(

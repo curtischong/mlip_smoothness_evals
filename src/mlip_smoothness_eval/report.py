@@ -5,7 +5,7 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass, field
 
-from .checks.base import CheckResult
+from mlip_smoothness_eval.checks.base import CheckResult
 
 # Direction of "good" for each metric and a soft threshold for the LJ-style
 # ideal. Used purely for the HTML scorecard coloring; the numbers are the truth.
@@ -70,20 +70,20 @@ class SmoothnessReport:
     # ---- render ------------------------------------------------------------
     def curve(self, name: str, *, symbol: str | None = None):
         """Plotly energy/force figure for a check (``symbol`` for diatomic)."""
-        from .viz.curves import curve as _curve
+        from mlip_smoothness_eval.viz.curves import curve as _curve
 
         return _curve(self._find(name, symbol))
 
     def gif(self, name: str, *, path: str | None = None, symbol: str | None = None, **kwargs) -> str:
         """Render a structure-morph gif for a sweep check; returns the path."""
-        from .viz.gifs import make_gif
+        from mlip_smoothness_eval.viz.gifs import make_gif
 
         path = path or f"{name}.gif"
         return make_gif(self._find(name, symbol), path, **kwargs)
 
     def pca_surface(self, structure=None, **kwargs):
         """Plotly 3D PCA energy surface around ``structure`` (defaults to first)."""
-        from .viz.pca_surface import pca_energy_surface
+        from mlip_smoothness_eval.viz.pca_surface import pca_energy_surface
 
         if self._model is None:
             raise RuntimeError("report has no model reference; cannot build PCA surface")

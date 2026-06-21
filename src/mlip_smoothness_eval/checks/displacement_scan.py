@@ -12,8 +12,8 @@ import numpy as np
 import torch
 from torch_sim.state import SimState
 
-from ..structures import displaced
-from .base import CheckResult, predict
+from mlip_smoothness_eval.structures import displaced
+from mlip_smoothness_eval.checks.base import CheckResult, predict
 
 
 def displacement_scan(

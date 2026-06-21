@@ -9,8 +9,8 @@ Quickstart
 >>> report.pca_surface()                    # 3D PES over PC1/PC2
 """
 
-from . import structures
-from .checks import (
+from mlip_smoothness_eval import structures
+from mlip_smoothness_eval.checks import (
     CheckResult,
     cutoff_smoothness,
     diatomic_smoothness,
@@ -20,9 +20,9 @@ from .checks import (
     nve_energy_drift,
     predict,
 )
-from .report import SmoothnessReport
-from .runner import evaluate_smoothness
-from .utils import resolve_path
+from mlip_smoothness_eval.report import SmoothnessReport
+from mlip_smoothness_eval.runner import evaluate_smoothness
+from mlip_smoothness_eval.utils import resolve_path
 
 __version__ = "0.1.0"
 

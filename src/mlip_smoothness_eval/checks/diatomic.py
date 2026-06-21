@@ -16,8 +16,8 @@ import torch
 from ase.data import atomic_numbers, covalent_radii, vdw_radii
 from torch_sim.state import SimState
 
-from ..structures import diatomic as _diatomic_state
-from .base import CheckResult, predict
+from mlip_smoothness_eval.structures import diatomic as _diatomic_state
+from mlip_smoothness_eval.checks.base import CheckResult, predict
 
 _NAN_METRICS = {
     "diatomic_tortuosity": float("nan"),

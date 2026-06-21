@@ -28,7 +28,7 @@ import torch
 from torch import Tensor
 from torch_sim.state import SimState
 
-from ..structures import with_positions
+from mlip_smoothness_eval.structures import with_positions
 
 # valid `method` values for the conservative-force / Jacobian probes
 METHODS = ("auto", "autograd", "finite_difference")

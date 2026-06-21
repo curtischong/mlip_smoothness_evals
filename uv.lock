@@ -820,7 +820,7 @@ examples = [
 
 [package.metadata]
 requires-dist = [
-    { name = "ase", specifier = ">=3.23" },
+    { name = "ase", specifier = ">=3.28" },
     { name = "imageio", specifier = ">=2.34" },
     { name = "mace-torch", marker = "extra == 'examples'", specifier = ">=0.3.16" },
     { name = "matplotlib", specifier = ">=3.8" },
@@ -830,7 +830,7 @@ requires-dist = [
     { name = "scikit-learn", specifier = ">=1.4" },
     { name = "scipy", specifier = ">=1.13" },
     { name = "torch", specifier = "==2.8.0", index = "https://download.pytorch.org/whl/cu128" },
-    { name = "torch-sim-atomistic", specifier = ">=0.3.0" },
+    { name = "torch-sim-atomistic", specifier = ">=0.6.0" },
 ]
 provides-extras = ["examples", "dev"]
 

@@ -1,6 +1,6 @@
 """The six smoothness / energy-conservation probes."""
 
-from .base import (
+from mlip_smoothness_eval.checks.base import (
     CheckResult,
     Prediction,
     conservative_forces,
@@ -9,12 +9,12 @@ from .base import (
     model_forces_fn,
     predict,
 )
-from .cutoff import cutoff_smoothness
-from .diatomic import diatomic_smoothness
-from .displacement_scan import displacement_scan
-from .force_jacobian import force_jacobian_asymmetry
-from .nonconservativity import nonconservativity
-from .nve_drift import nve_energy_drift
+from mlip_smoothness_eval.checks.cutoff import cutoff_smoothness
+from mlip_smoothness_eval.checks.diatomic import diatomic_smoothness
+from mlip_smoothness_eval.checks.displacement_scan import displacement_scan
+from mlip_smoothness_eval.checks.force_jacobian import force_jacobian_asymmetry
+from mlip_smoothness_eval.checks.nonconservativity import nonconservativity
+from mlip_smoothness_eval.checks.nve_drift import nve_energy_drift
 
 __all__ = [
     "CheckResult",
