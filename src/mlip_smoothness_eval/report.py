@@ -138,45 +138,19 @@ class SmoothnessReport:
             structure = self.structures[0]
         return pca_energy_surface(self._model, structure, **kwargs)
 
-    # ---- inline HTML scorecard --------------------------------------------
+    # ---- scorecard ---------------------------------------------------------
+    def to_frame(self) -> "pd.DataFrame":
+        """Aggregated metrics as a single-column DataFrame, in display order."""
+        import pandas as pd
+
+        metrics = self.metrics
+        ordered = [k for k in _METRIC_ORDER if k in metrics]
+        return pd.DataFrame({"value": [metrics[k] for k in ordered]}, index=ordered)
+
     def _repr_html_(self) -> str:
-        return self.to_html()
+        return self.to_frame()._repr_html_()
 
     def display(self) -> None:
-        from IPython.display import HTML, display
+        from IPython.display import display
 
-        display(HTML(self.to_html()))
-
-    def to_html(self) -> str:
-        rows = []
-        for key in _METRIC_ORDER:
-            if key not in self.metrics:
-                continue
-            val = self.metrics[key]
-            rows.append(self._row_html(key, val))
-        notes_html = ""
-        if self.notes:
-            items = "".join(f"<li>{n}</li>" for n in self.notes)
-            notes_html = f"<ul style='margin:8px 0 0;color:#7B7B7B;font-size:12px'>{items}</ul>"
-        return (
-            "<div style=\"font-family:'Suisse Intl',-apple-system,Arial,sans-serif;"
-            "color:#1D272A;max-width:680px\">"
-            f"<h3 style='margin:0 0 2px'>Smoothness scorecard — {self.model_name}</h3>"
-            "<p style='margin:0 0 10px;color:#7B7B7B;font-size:12px'>"
-            "lower is better unless noted; diatomic tortuosity / force-flips ideal ≈ 1</p>"
-            "<table style='border-collapse:collapse;width:100%;font-size:13px'>"
-            "<tr style='text-align:left;border-bottom:1px solid #B4B4B4'>"
-            "<th style='padding:4px 8px'>metric</th>"
-            "<th style='padding:4px 8px;text-align:right'>value</th></tr>"
-            + "".join(rows)
-            + "</table>"
-            + notes_html
-            + "</div>"
-        )
-
-    def _row_html(self, key: str, val: float) -> str:
-        return (
-            "<tr style='border-bottom:1px solid #E2E0D8'>"
-            f"<td style='padding:4px 8px;font-family:ui-monospace,Menlo,monospace'>{key}</td>"
-            f"<td style='padding:4px 8px;text-align:right;font-family:ui-monospace,Menlo,monospace'>{val:.4g}</td></tr>"
-        )
+        display(self.to_frame())

@@ -20,9 +20,8 @@ def test_evaluate_and_scorecard(lj_model, crystal):
     metrics = report.metrics
     assert "nonconservativity_rmse" in metrics
     assert "diatomic_tortuosity" in metrics
-    html = report.to_html()
-    assert "Smoothness scorecard" in html
-    assert "nonconservativity_rmse" in html
+    assert "nonconservativity_rmse" in report.to_frame().index
+    assert "nonconservativity_rmse" in report._repr_html_()
 
 
 def test_curves_return_figures(lj_model, crystal):
@@ -38,9 +37,9 @@ def test_gif_written(tmp_path, lj_model, crystal):
     report = evaluate_smoothness(
         lj_model, structures=[crystal], diatomic_symbols=("O",), run_nve=False
     )
-    path = str(tmp_path / "scan.gif")
-    out = report.gif("displacement_scan", path=path, max_frames=8)
-    assert os.path.exists(out) and os.path.getsize(out) > 0
+    for name, symbol in (("displacement_scan", None), ("diatomic", "O")):
+        out = report.gif(name, path=str(tmp_path / f"{name}.gif"), symbol=symbol, max_frames=8)
+        assert os.path.exists(out) and os.path.getsize(out) > 0
 
 
 def test_pca_surface(lj_model, crystal):

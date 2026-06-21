@@ -3004,6 +3004,7 @@ dependencies = [
     { name = "imageio" },
     { name = "matplotlib" },
     { name = "numpy" },
+    { name = "pandas" },
     { name = "plotly" },
     { name = "scikit-learn" },
     { name = "scipy", version = "1.16.3", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-20-mlip-smoothness-eval-fairchem' or (extra == 'extra-20-mlip-smoothness-eval-mace' and extra == 'extra-20-mlip-smoothness-eval-mattersim') or (extra == 'extra-20-mlip-smoothness-eval-mace' and extra == 'extra-20-mlip-smoothness-eval-nequip') or (extra == 'extra-20-mlip-smoothness-eval-mace' and extra == 'extra-20-mlip-smoothness-eval-nequix') or (extra == 'extra-20-mlip-smoothness-eval-mace' and extra == 'extra-20-mlip-smoothness-eval-sevenn')" },
@@ -3063,6 +3064,7 @@ requires-dist = [
     { name = "nequix", extras = ["torch-sim"], marker = "extra == 'nequix'", specifier = ">=0.4.5" },
     { name = "numpy", specifier = ">=1.26" },
     { name = "orb-models", marker = "extra == 'orb'", specifier = ">=0.6.2" },
+    { name = "pandas", specifier = ">=2.2" },
     { name = "phono3py", marker = "extra == 'mattersim'", specifier = ">=4.0.0" },
     { name = "plotly", specifier = ">=5.22" },
     { name = "scikit-learn", specifier = ">=1.4" },
@@ -4161,7 +4163,7 @@ source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "numpy" },
     { name = "python-dateutil" },
-    { name = "tzdata", marker = "sys_platform == 'emscripten' or sys_platform == 'win32'" },
+    { name = "tzdata", marker = "sys_platform == 'emscripten' or sys_platform == 'win32' or (extra == 'extra-20-mlip-smoothness-eval-fairchem' and extra == 'extra-20-mlip-smoothness-eval-mace') or (extra == 'extra-20-mlip-smoothness-eval-mace' and extra == 'extra-20-mlip-smoothness-eval-mattersim') or (extra == 'extra-20-mlip-smoothness-eval-mace' and extra == 'extra-20-mlip-smoothness-eval-nequip') or (extra == 'extra-20-mlip-smoothness-eval-mace' and extra == 'extra-20-mlip-smoothness-eval-nequix') or (extra == 'extra-20-mlip-smoothness-eval-mace' and extra == 'extra-20-mlip-smoothness-eval-sevenn')" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/f8/87/4341c6252d1c47b08768c3d25ac487362bf403f0313ddae4a2a26c9b1b4c/pandas-3.0.3.tar.gz", hash = "sha256:696a4a00a2a2a35d4e5deb3fc946641b96c944f02230e4f76137fe35d806c4fc", size = 4651414, upload-time = "2026-05-11T18:54:29.21Z" }
 wheels = [
