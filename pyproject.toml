@@ -1,0 +1,44 @@
+[project]
+name = "mlip_smoothness_eval"
+version = "0.1.0"
+description = "Model-agnostic smoothness & energy-conservation benchmark for torch-sim MLIPs."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+dependencies = [
+    "torch==2.8.0",
+    "torch-sim-atomistic>=0.3.0",
+    "ase>=3.23",
+    "numpy>=1.26",
+    "scipy>=1.13",
+    "scikit-learn>=1.4",
+    "plotly>=5.22",
+    "matplotlib>=3.8",
+    "imageio>=2.34",
+]
+
+[project.optional-dependencies]
+examples = ["mace-torch>=0.3.16"]
+dev = ["pytest>=8.0"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mlip_smoothness_eval"]
+
+[tool.uv]
+# CPU/GPU torch from the PyTorch cu128 index (wheels run on CPU too, so the same
+# environment covers the LJ unit tests on CPU and the MACE demo on GPU).
+[tool.uv.sources]
+torch = { index = "pytorch-cu128" }
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
