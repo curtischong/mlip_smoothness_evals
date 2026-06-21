@@ -6,7 +6,7 @@
 # inline. Run this as a notebook (VS Code / Jupyter `# %%` cells) or top to
 # bottom as a script.
 #
-# Install the demo extra first: `uv sync --extra examples`.
+# Install the demo extra first: `uv sync --extra mace`.
 
 # %%
 import torch
