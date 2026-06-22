@@ -3,8 +3,9 @@
 Each MLIP family pins an incompatible dependency stack (see the ``conflicts``
 block in pyproject.toml), so the models can never share a process. This worker
 is the per-model half of the comparison: it is launched once per model under
-that model's uv extra (``uv run --extra <key> python examples/compare_worker.py
-<key>``), builds the model, runs ``evaluate_smoothness``, and writes the report
+that model's uv extra (``uv run --extra <key> python
+src/mlip_smoothness_eval/examples/compare_worker.py <key>``), builds the model,
+runs ``evaluate_smoothness``, and writes the report
 as plain JSON. ``compare_models.py`` then reads every JSON and plots — it needs
 only plotly, never the models.
 

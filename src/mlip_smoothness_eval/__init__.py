@@ -12,6 +12,7 @@ Quickstart
 from mlip_smoothness_eval import structures
 from mlip_smoothness_eval.checks import (
     CheckResult,
+    boundary_crossing,
     cutoff_smoothness,
     diatomic_smoothness,
     displacement_scan,
@@ -34,6 +35,7 @@ __all__ = [
     "nonconservativity",
     "displacement_scan",
     "cutoff_smoothness",
+    "boundary_crossing",
     "force_jacobian_asymmetry",
     "diatomic_smoothness",
     "nve_energy_drift",

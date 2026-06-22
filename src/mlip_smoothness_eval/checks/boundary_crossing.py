@@ -17,6 +17,8 @@ and re-entering the opposite one while the energy stays smooth.
 
 from __future__ import annotations
 
+import math
+
 import numpy as np
 import torch
 from torch_sim.state import SimState
@@ -33,17 +35,23 @@ def boundary_crossing(
     axis: int = 0,
     num_steps: int = 120,
 ) -> CheckResult:
-    """Drag ``atom`` by one full lattice vector along ``axis`` across the boundary.
+    """Sweep ``atom`` one full turn of the periodic phase along ``axis``.
 
-    The endpoint (full-period translation) is the same configuration as the
-    start, so a correct periodic model returns to its initial energy.
+    The swept coordinate is the phase ``theta`` of the periodic axis, run from
+    ``+pi`` to ``-pi`` — one full lattice vector of travel. ``+pi`` and ``-pi``
+    are the same point on the circle (a full-period translation apart), so a
+    correct periodic model comes back to its initial energy with no jump.
     """
     if not bool(torch.as_tensor(state.pbc).any()):
         raise ValueError("boundary_crossing needs a periodic state (pbc=True)")
 
     cell = state.cell[0].detach()  # (3, 3) column-vector lattice
     lat = cell[:, axis]  # cartesian lattice vector for this axis
-    fracs = torch.linspace(0.0, 1.0, num_steps, dtype=torch.float64)
+    # one full turn of the periodic phase: +pi -> -pi. The fractional
+    # displacement along the lattice vector is theta / 2pi (+1/2 .. -1/2), so the
+    # endpoints sit one full lattice vector apart — the same periodic image.
+    thetas = torch.linspace(math.pi, -math.pi, num_steps, dtype=torch.float64)
+    fracs = thetas / (2.0 * math.pi)
 
     base = state.positions.detach()
     lat_p = lat.to(base)
@@ -73,10 +81,11 @@ def boundary_crossing(
         "boundary_periodicity_error": float((energies[-1] - energies[0]).abs()),
     }
     trace = {
-        "x": (fracs * float(lat_p.norm())).numpy(),
+        "x": thetas.numpy(),
         "energy": energies.numpy(),
         "force": forces.numpy(),
         "frames": frames,
-        "xlabel": "distance along lattice vector (Å)",
+        "cell": cell_p.cpu().numpy(),  # (3,3) column-vector lattice, for the gif box
+        "xlabel": "periodic phase θ (rad)",
     }
     return CheckResult("boundary_crossing", metrics, trace, {"atom": atom, "axis": axis})

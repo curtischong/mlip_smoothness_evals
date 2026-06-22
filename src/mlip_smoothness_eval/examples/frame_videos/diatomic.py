@@ -18,12 +18,7 @@
 # Run top-to-bottom as a script, or open in VS Code / Jupyter and run the cells.
 
 # %%
-import sys
-from pathlib import Path
-
-# the shared helper lives beside this file
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-import frame_video as fv
+from mlip_smoothness_eval.examples.frame_videos import frame_video as fv
 
 # %%
 model = fv.reference_model()

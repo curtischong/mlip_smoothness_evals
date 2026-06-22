@@ -20,5 +20,5 @@ report.gif("displacement_scan")        # structure morph + advancing curve
 report.pca_surface(structure)          # 3D PES over PC1/PC2, z = energy
 ```
 
-See `examples/smoothness_demo.py` for an end-to-end demo on MACE-MP-0.
+See `src/mlip_smoothness_eval/examples/smoothness_demo.py` for an end-to-end demo on MACE-MP-0.
 # mlip_smoothness_evals

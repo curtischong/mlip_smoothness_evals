@@ -7,8 +7,8 @@
 # re-syncs to that family's resolution from the lockfile — then aggregate the
 # JSON in the base env (plotly only).
 #
-#   examples/run_comparison.sh                 # all models below
-#   examples/run_comparison.sh mace orb        # just these
+#   src/mlip_smoothness_eval/examples/run_comparison.sh           # all models below
+#   src/mlip_smoothness_eval/examples/run_comparison.sh mace orb  # just these
 #
 # A model that fails to load (missing checkpoint, unsupported loader) is logged
 # and skipped so the rest still produce a comparison.

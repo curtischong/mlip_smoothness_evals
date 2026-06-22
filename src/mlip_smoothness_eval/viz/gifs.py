@@ -21,6 +21,21 @@ _SWEEP_CHECKS = {"diatomic", "displacement_scan", "cutoff_smoothness", "boundary
 
 _EMBER = "#C4650D"
 _SLATE = "#4E728A"
+_CELL = "#B4B4B4"
+
+
+def _cell_edges(cell: np.ndarray) -> list[tuple[np.ndarray, np.ndarray]]:
+    """The 12 parallelepiped edges of a column-vector ``(3,3)`` lattice at the origin."""
+    vecs = [cell[:, 0], cell[:, 1], cell[:, 2]]
+    edges = []
+    for i in (0, 1):
+        for j in (0, 1):
+            for k in (0, 1):
+                corner = i * vecs[0] + j * vecs[1] + k * vecs[2]
+                for axis, (di, dj, dk) in enumerate([(1, 0, 0), (0, 1, 0), (0, 0, 1)]):
+                    if (i, j, k)[axis] == 0:
+                        edges.append((corner, corner + vecs[axis]))
+    return edges
 
 
 def _y_for(trace: dict) -> tuple[np.ndarray, str]:
@@ -85,13 +100,19 @@ def make_gif(
     y, ylabel = _y_for(t)
     xlabel = t.get("xlabel", "step")
 
+    cell = np.asarray(t["cell"]) if "cell" in t else None
+    edges = _cell_edges(cell) if cell is not None else None
+
     n = frames.shape[0]
     idx = np.linspace(0, n - 1, min(max_frames, n)).round().astype(int)
 
-    pos_all = frames.reshape(-1, 3)
+    # range over atoms plus, when present, the cell corners so the full box shows
+    extent = frames.reshape(-1, 3)
+    if edges is not None:
+        extent = np.concatenate([extent, np.array([p for e in edges for p in e])])
     pad = 0.5
     ranges = [
-        (float(pos_all[:, d].min()) - pad, float(pos_all[:, d].max()) + pad)
+        (float(extent[:, d].min()) - pad, float(extent[:, d].max()) + pad)
         for d in range(3)
     ]
     y_pad = 0.05 * (float(y.max()) - float(y.min()) + 1e-9)
@@ -104,6 +125,9 @@ def make_gif(
         fig = plt.figure(figsize=(8, 4), dpi=dpi)
         ax3d = fig.add_subplot(1, 2, 1, projection="3d")
         p = frames[i]
+        if edges is not None:
+            for start, end in edges:
+                ax3d.plot(*np.stack([start, end], axis=1), color=_CELL, lw=1.0)
         ax3d.scatter(p[:, 0], p[:, 1], p[:, 2], s=120, c=_SLATE, depthshade=True)
         ax3d.set_xlim(*ranges[0])
         ax3d.set_ylim(*ranges[1])

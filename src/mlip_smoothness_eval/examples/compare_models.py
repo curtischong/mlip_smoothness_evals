@@ -5,8 +5,8 @@ plotly. It reads every ``*.json`` written by ``compare_worker.py`` and renders
 (1) a metrics heatmap across models and (2) overlaid per-check curves, into a
 single standalone ``comparison.html``.
 
-    uv run python examples/compare_models.py            # reads comparison_results/
-    uv run python examples/compare_models.py --outdir results --html out.html
+    uv run python src/mlip_smoothness_eval/examples/compare_models.py   # reads comparison_results/
+    uv run python src/mlip_smoothness_eval/examples/compare_models.py --outdir results --html out.html
 """
 
 from __future__ import annotations

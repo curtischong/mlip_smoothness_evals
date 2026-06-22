@@ -51,7 +51,7 @@ def curve(result: CheckResult) -> go.Figure:
     if name == "boundary_crossing":
         return _two_panel(
             t["x"], t["energy"], t["force"],
-            xlabel=t.get("xlabel", "distance along lattice vector (Å)"),
+            xlabel=t.get("xlabel", "periodic phase θ (rad)"),
             top_label="energy (eV)",
             bot_label="|force on dragged atom| (eV/Å)",
         )
