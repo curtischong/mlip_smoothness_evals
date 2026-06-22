@@ -13,7 +13,8 @@
 #
 # `download_bsct_dataset=True` fetches the BSCT-SPICE dataset to the in-repo
 # default location (`data/bsct_spice`) on first run; pass a path as the first
-# argument to use your own copy instead. Expect ~40 min on GPU.
+# argument to use your own copy instead. Inference is batched across frames into
+# multi-system torch-sim forward passes, so this runs in a few minutes on GPU.
 
 # %%
 import sys
@@ -58,6 +59,7 @@ report = evaluate_smoothness(
     bsct_data_path=data_path,
     download_bsct_dataset=True,
     model_name="MACE-MP-0 (small)",
+    bsct_max_atoms_per_batch=2**16,
 )
 report
 

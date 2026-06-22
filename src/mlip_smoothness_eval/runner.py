@@ -31,6 +31,7 @@ def evaluate_smoothness(
     run_bsct: bool = False,
     bsct_data_path: str | None = None,
     download_bsct_dataset: bool = False,
+    bsct_max_atoms_per_batch: int = 4096,
     method: str = "auto",
     model_name: str | None = None,
     notes: list[str] | None = None,
@@ -54,7 +55,8 @@ def evaluate_smoothness(
         the optional ``bsct`` dependency. ``bsct_data_path`` points at an existing
         ``bsct_spice/`` dataset; leave it ``None`` to use the in-repo default and
         set ``download_bsct_dataset=True`` to fetch it there if missing. Off by
-        default (~40 min on GPU).
+        default. ``bsct_max_atoms_per_batch`` caps how many atoms are packed into
+        each batched torch-sim forward pass (raise it to use more GPU memory).
     """
     if structures is None:
         structures = [random_crystal(device=device, dtype=dtype)]
@@ -79,6 +81,7 @@ def evaluate_smoothness(
                 model,
                 data_path=bsct_data_path,
                 download_dataset=download_bsct_dataset,
+                max_atoms_per_batch=bsct_max_atoms_per_batch,
                 device=device,
                 dtype=dtype,
             )
