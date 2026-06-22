@@ -2,6 +2,7 @@
 
 from mlip_smoothness_eval.checks.base import CheckResult, predict
 from mlip_smoothness_eval.checks.boundary_crossing import boundary_crossing
+from mlip_smoothness_eval.checks.bsct import bsct_smoothness
 from mlip_smoothness_eval.checks.cutoff import cutoff_smoothness
 from mlip_smoothness_eval.checks.diatomic import diatomic_smoothness
 from mlip_smoothness_eval.checks.displacement_scan import displacement_scan
@@ -13,6 +14,7 @@ __all__ = [
     "CheckResult",
     "predict",
     "boundary_crossing",
+    "bsct_smoothness",
     "cutoff_smoothness",
     "diatomic_smoothness",
     "displacement_scan",

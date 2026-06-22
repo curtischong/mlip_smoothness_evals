@@ -41,6 +41,15 @@ _METRIC_ORDER: tuple[str, ...] = (
     "nve_final_drift_per_atom",
     "nve_max_drift_per_atom",
     "nve_drift_std_per_atom",
+    "bsct_full_smoothness",
+    "bsct_full_energy_mae",
+    "bsct_full_forces_mae",
+    "bsct_compress_smoothness",
+    "bsct_compress_energy_mae",
+    "bsct_compress_forces_mae",
+    "bsct_stretch_smoothness",
+    "bsct_stretch_energy_mae",
+    "bsct_stretch_forces_mae",
 )
 
 

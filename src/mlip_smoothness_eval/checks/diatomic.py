@@ -14,6 +14,7 @@ import math
 import numpy as np
 import torch
 from ase.data import atomic_numbers, covalent_radii, vdw_radii
+from duecredit import Doi, due
 from torch_sim.state import SimState
 
 from mlip_smoothness_eval.structures import diatomic as _diatomic_state
@@ -26,6 +27,11 @@ _NAN_METRICS = {
 }
 
 
+@due.dcite(
+    Doi("10.48550/arXiv.2509.20630"),
+    description="Homonuclear diatomic potential-energy-curve smoothness diagnostics",
+    path="mlip_smoothness_eval.checks.diatomic",
+)
 def diatomic_smoothness(
     model: object,
     symbol: str,

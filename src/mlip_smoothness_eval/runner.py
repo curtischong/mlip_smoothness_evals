@@ -7,6 +7,7 @@ from torch_sim.state import SimState
 
 from mlip_smoothness_eval.checks import (
     boundary_crossing,
+    bsct_smoothness,
     cutoff_smoothness,
     diatomic_smoothness,
     displacement_scan,
@@ -27,6 +28,9 @@ def evaluate_smoothness(
     dtype: torch.dtype = torch.float64,
     run_nve: bool = True,
     nve_steps: int = 1000,
+    run_bsct: bool = False,
+    bsct_data_path: str | None = None,
+    download_bsct_dataset: bool = False,
     method: str = "auto",
     model_name: str | None = None,
     notes: list[str] | None = None,
@@ -45,6 +49,12 @@ def evaluate_smoothness(
         Elements whose homonuclear diatomic PEC is scored.
     run_nve / nve_steps:
         Whether to run the NVE energy-drift gate, and for how many steps.
+    run_bsct / bsct_data_path / download_bsct_dataset:
+        Whether to run the external BSCT cross-check (arXiv:2602.04861); requires
+        the optional ``bsct`` dependency. ``bsct_data_path`` points at an existing
+        ``bsct_spice/`` dataset; leave it ``None`` to use the in-repo default and
+        set ``download_bsct_dataset=True`` to fetch it there if missing. Off by
+        default (~40 min on GPU).
     """
     if structures is None:
         structures = [random_crystal(device=device, dtype=dtype)]
@@ -62,6 +72,17 @@ def evaluate_smoothness(
 
     for symbol in diatomic_symbols:
         results.append(diatomic_smoothness(model, symbol, device=device, dtype=dtype))
+
+    if run_bsct:
+        results.append(
+            bsct_smoothness(
+                model,
+                data_path=bsct_data_path,
+                download_dataset=download_bsct_dataset,
+                device=device,
+                dtype=dtype,
+            )
+        )
 
     return SmoothnessReport(
         results=results,
