@@ -22,7 +22,8 @@ dependencies = [
 [project.optional-dependencies]
 # external cross-check (arXiv:2602.04861); the bsct_spice/ dataset is not shipped
 # with the package — clone the repo and pass its path as bsct_data_path.
-bsct = ["bsct"]
+# atompack-db caches the dataset in a fast .atp store so reads aren't ase.io-bound.
+bsct = ["bsct", "atompack-db"]
 mace = ["mace-torch>=0.3.16"]
 # phono3py>=4.0.0: some older 3.x sdists (e.g. 3.2.0) fail to build and break uv resolution.
 mattersim = ["mattersim>=1.2.5", "phono3py>=4.0.0"]

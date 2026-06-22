@@ -59,7 +59,7 @@ report = evaluate_smoothness(
     bsct_data_path=data_path,
     download_bsct_dataset=True,
     model_name="MACE-MP-0 (small)",
-    bsct_max_atoms_per_batch=2**16,
+    bsct_max_atoms_per_batch=2**15,
 )
 report
 
