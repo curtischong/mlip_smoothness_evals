@@ -17,7 +17,7 @@ import numpy as np
 
 from mlip_smoothness_eval.checks.base import CheckResult
 
-_SWEEP_CHECKS = {"diatomic", "displacement_scan", "cutoff_smoothness"}
+_SWEEP_CHECKS = {"diatomic", "displacement_scan", "cutoff_smoothness", "boundary_crossing"}
 
 _EMBER = "#C4650D"
 _SLATE = "#4E728A"

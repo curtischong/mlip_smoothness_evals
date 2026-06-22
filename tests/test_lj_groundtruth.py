@@ -9,6 +9,7 @@ from __future__ import annotations
 import math
 
 from mlip_smoothness_eval.checks import (
+    boundary_crossing,
     cutoff_smoothness,
     diatomic_smoothness,
     displacement_scan,
@@ -46,6 +47,16 @@ def test_cutoff_no_giant_spikes(lj_model, dilute_crystal):
     # a hard graph cutoff would push these into the hundreds; smooth LJ stays low
     assert m["cutoff_energy_spike_ratio"] < 50.0, m
     assert m["cutoff_force_spike_ratio"] < 50.0, m
+
+
+def test_boundary_crossing_smooth_and_periodic(lj_model, dilute_crystal):
+    """Dragging an atom a full lattice vector across the boundary is smooth and periodic."""
+    m = boundary_crossing(lj_model, dilute_crystal).metrics
+    # a discontinuous wrap would spike these; minimum-image LJ stays low
+    assert m["boundary_energy_spike_ratio"] < 50.0, m
+    assert m["boundary_force_spike_ratio"] < 50.0, m
+    # full-period translation returns to the identical configuration
+    assert m["boundary_periodicity_error"] < 1e-6, m
 
 
 def test_diatomic_single_well(lj_model):

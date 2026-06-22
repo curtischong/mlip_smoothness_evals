@@ -6,6 +6,7 @@ import torch
 from torch_sim.state import SimState
 
 from mlip_smoothness_eval.checks import (
+    boundary_crossing,
     cutoff_smoothness,
     diatomic_smoothness,
     displacement_scan,
@@ -53,6 +54,8 @@ def evaluate_smoothness(
         results.append(nonconservativity(model, state, method=method))
         results.append(displacement_scan(model, state))
         results.append(cutoff_smoothness(model, state))
+        if bool(torch.as_tensor(state.pbc).any()):
+            results.append(boundary_crossing(model, state))
         results.append(force_jacobian_asymmetry(model, state, method=method))
         if run_nve:
             results.append(nve_energy_drift(model, state, steps=nve_steps))

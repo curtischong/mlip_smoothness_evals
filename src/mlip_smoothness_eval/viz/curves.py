@@ -48,6 +48,13 @@ def curve(result: CheckResult) -> go.Figure:
             top_label="energy (eV)",
             bot_label="|force on atom 0| (eV/Å)",
         )
+    if name == "boundary_crossing":
+        return _two_panel(
+            t["x"], t["energy"], t["force"],
+            xlabel=t.get("xlabel", "distance along lattice vector (Å)"),
+            top_label="energy (eV)",
+            bot_label="|force on dragged atom| (eV/Å)",
+        )
     if name == "nve_drift":
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=t["x"], y=t["drift_per_atom"], mode="lines",

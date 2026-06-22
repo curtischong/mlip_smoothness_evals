@@ -1,14 +1,15 @@
 """Shared setup + inline-video helper for the frame-by-frame smoothness scripts.
 
-Three of the six probes move atoms through a sequence of frames while a metric
+Four of the seven probes move atoms through a sequence of frames while a metric
 traces out, so they animate naturally:
 
 - ``diatomic`` — pull a homonuclear dimer apart and watch the bond PEC,
 - ``displacement_scan`` — slide every atom along one random direction,
-- ``cutoff_smoothness`` — drag a single atom in a straight line.
+- ``cutoff_smoothness`` — drag a single atom in a straight line,
+- ``boundary_crossing`` — drag one atom a full lattice vector across a cell face.
 
 The sibling ``# %%`` scripts in this folder (``diatomic.py``,
-``displacement_scan.py``, ``cutoff.py``) each import this module, so they all
+``displacement_scan.py``, ``cutoff.py``, ``boundary_crossing.py``) each import this module, so they all
 share one reference model, the structures, and the video logic (``animate``
 wraps the package renderer ``viz.gifs.make_gif``, which morphs the atoms beside
 the advancing energy curve and holds the final frame). The other three probes
@@ -24,6 +25,7 @@ from torch_sim.state import SimState
 from mlip_smoothness_eval import structures
 from mlip_smoothness_eval.checks import (
     CheckResult,
+    boundary_crossing,
     cutoff_smoothness,
     diatomic_smoothness,
     displacement_scan,
@@ -81,6 +83,16 @@ def displacement_result(model: object, state: SimState | None = None) -> CheckRe
 
 def cutoff_result(model: object, state: SimState | None = None) -> CheckResult:
     return cutoff_smoothness(model, state or dilute_crystal())
+
+
+def boundary_result(model: object, state: SimState | None = None) -> CheckResult:
+    """Drag one atom a full lattice vector across a face of the dilute Ar cell.
+
+    The same loosely-packed cell as the cutoff probe: the dragged atom passes
+    through the gentle attractive tail rather than a repulsive wall, so any spike
+    is a genuine boundary discontinuity, not a wall-ram.
+    """
+    return boundary_crossing(model, state or dilute_crystal())
 
 
 def animate(
