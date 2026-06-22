@@ -55,6 +55,20 @@ def curve(result: CheckResult) -> go.Figure:
             top_label="energy (eV)",
             bot_label="|force on dragged atom| (eV/Å)",
         )
+    if name == "boundary_crossing2":
+        fig = make_subplots(rows=2, cols=1, shared_xaxes=True, vertical_spacing=0.10)
+        fig.add_trace(go.Scatter(x=t["x"], y=t["energy"], mode="markers", name="model E",
+                                 marker=dict(color=EDITORIAL_8[0], size=5)), row=1, col=1)
+        fig.add_trace(go.Scatter(x=t["curve_x"], y=t["curve_energy_spline"], mode="lines",
+                                 name="smoothing spline", line=dict(color=EDITORIAL_8[1])), row=1, col=1)
+        fig.add_trace(go.Scatter(x=t["curve_x"], y=t["curve_bending_density"], mode="lines",
+                                 name="bending density", line=dict(color=EDITORIAL_8[2]),
+                                 fill="tozeroy"), row=2, col=1)
+        fig.update_yaxes(title_text="energy (eV)", row=1, col=1)
+        fig.update_yaxes(title_text="(d²E/dx²)²  ·  area = bending energy", row=2, col=1)
+        fig.update_xaxes(title_text=t.get("xlabel", "periodic phase θ (rad)"), row=2, col=1)
+        apply_theme(fig, height=560)
+        return fig
     if name == "nve_drift":
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=t["x"], y=t["drift_per_atom"], mode="lines",

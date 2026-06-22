@@ -26,6 +26,7 @@ from mlip_smoothness_eval import structures
 from mlip_smoothness_eval.checks import (
     CheckResult,
     boundary_crossing,
+    boundary_crossing_curve_smoothness,
     cutoff_smoothness,
     diatomic_smoothness,
     displacement_scan,
@@ -93,6 +94,11 @@ def boundary_result(model: object, state: SimState | None = None) -> CheckResult
     is a genuine boundary discontinuity, not a wall-ram.
     """
     return boundary_crossing(model, state or dilute_crystal())
+
+
+def boundary_curve_result(model: object, state: SimState | None = None) -> CheckResult:
+    """Same crossing as ``boundary_result``, scored by the curve-smoothness metrics."""
+    return boundary_crossing_curve_smoothness(model, state or dilute_crystal())
 
 
 def animate(
