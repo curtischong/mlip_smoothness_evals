@@ -10,7 +10,9 @@
 #
 # - **energy_range_max** `max E − min E` of the worst structure (eV),
 # - **energy_per_atom_max** the same normalised by atom count (eV/atom),
-# - **energy_std_mean** the average wobble across structures,
+# - **energy_std_per_atom_mean / _max** the average / worst per-atom std of the
+#   energy across the distinct translated images (eV/atom) — how *consistent* the
+#   energy stays as the cell slides; this is the headline consistency metric,
 # - **force_dev_max** the largest force change from the untranslated frame (eV/Å),
 # - **periodicity_error_max** the residual after a full-lattice-vector shift.
 #

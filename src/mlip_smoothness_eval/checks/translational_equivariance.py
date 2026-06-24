@@ -76,8 +76,12 @@ def translational_equivariance(
     Translates every atom of each periodic state by ``frac`` of lattice vector
     ``axis`` (``frac = theta / 2pi`` over ``theta in [0, 2pi]``) and measures the
     spurious energy / force variation a translationally invariant model must not
-    have. Metrics aggregate across the structures: ``*_range_max`` /
-    ``*_per_atom_max`` are the worst structure, ``*_std_mean`` the average wobble,
+    have. The headline consistency metric is the standard deviation of the energy
+    across the ``num_steps - 1`` *distinct* translated images (the ``theta = 2pi``
+    sample is the same periodic image as ``theta = 0`` and is dropped so the start
+    is not double-counted), normalised per atom. Metrics aggregate across the
+    structures: ``*_range_max`` / ``*_per_atom_max`` are the worst structure,
+    ``*_std_per_atom_{mean,max}`` the average / worst per-atom energy wobble,
     ``periodicity_error_max`` the residual after a full-lattice-vector shift.
     Smaller is better on every metric; a perfect model scores zero.
     """
@@ -123,12 +127,15 @@ def translational_equivariance(
             calc_forces[si][ki] = fk.cpu().numpy()
         i = j
 
-    e_range, e_std, e_per_atom, f_dev, periodicity = [], [], [], [], []
+    e_range, e_std_pa, e_per_atom, f_dev, periodicity = [], [], [], [], []
     for si in range(len(states)):
         e = calc_energy[si]
         f = np.stack(calc_forces[si])  # (num_steps, N, 3)
+        # θ=2π is the same periodic image as θ=0; drop it so the std is over
+        # distinct translations only and the start image isn't double-counted.
+        e_unique = e[:-1]
         e_range.append(float(e.max() - e.min()))
-        e_std.append(float(e.std()))
+        e_std_pa.append(float(e_unique.std()) / n_atoms[si])
         e_per_atom.append(float(e.max() - e.min()) / n_atoms[si])
         f_dev.append(float(np.abs(f - f[0]).max()))
         periodicity.append(float(abs(e[-1] - e[0])))
@@ -136,7 +143,8 @@ def translational_equivariance(
     metrics = {
         "equivariance_energy_range_max": max(e_range),
         "equivariance_energy_per_atom_max": max(e_per_atom),
-        "equivariance_energy_std_mean": float(np.mean(e_std)),
+        "equivariance_energy_std_per_atom_mean": float(np.mean(e_std_pa)),
+        "equivariance_energy_std_per_atom_max": max(e_std_pa),
         "equivariance_force_dev_max": max(f_dev),
         "equivariance_periodicity_error_max": max(periodicity),
     }

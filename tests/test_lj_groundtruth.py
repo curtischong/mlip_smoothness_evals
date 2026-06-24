@@ -64,6 +64,7 @@ def test_translational_equivariance_is_flat(lj_model, crystal, dilute_crystal):
     """Rigidly translating a periodic cell leaves a minimum-image LJ energy constant."""
     m = translational_equivariance(lj_model, [crystal, dilute_crystal]).metrics
     assert m["equivariance_energy_range_max"] < 1e-6, m
+    assert m["equivariance_energy_std_per_atom_max"] < 1e-6, m
     assert m["equivariance_force_dev_max"] < 1e-6, m
     assert m["equivariance_periodicity_error_max"] < 1e-6, m
 
