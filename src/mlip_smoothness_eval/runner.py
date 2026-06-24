@@ -14,6 +14,7 @@ from mlip_smoothness_eval.checks import (
     force_jacobian_asymmetry,
     nonconservativity,
     nve_energy_drift,
+    translational_equivariance,
 )
 from mlip_smoothness_eval.report import SmoothnessReport
 from mlip_smoothness_eval.structures import random_crystal
@@ -71,6 +72,10 @@ def evaluate_smoothness(
         results.append(force_jacobian_asymmetry(model, state, method=method))
         if run_nve:
             results.append(nve_energy_drift(model, state, steps=nve_steps))
+
+    periodic = [s for s in structures if bool(torch.as_tensor(s.pbc).any())]
+    if periodic:
+        results.append(translational_equivariance(model, periodic, device=device, dtype=dtype))
 
     for symbol in diatomic_symbols:
         results.append(diatomic_smoothness(model, symbol, device=device, dtype=dtype))

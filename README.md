@@ -6,7 +6,7 @@ interatomic potential).
 
 Static energy/force MAE can look great while a learned potential is jagged or
 non-conservative — which is what actually breaks MD, relaxation, and phonons.
-This package scores the potential *as a function* via seven diagnostics, runs them
+This package scores the potential *as a function* via eight diagnostics, runs them
 through a single call, and renders the results inline in a notebook.
 
 ```python

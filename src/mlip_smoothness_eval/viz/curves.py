@@ -69,6 +69,20 @@ def curve(result: CheckResult) -> go.Figure:
         fig.update_xaxes(title_text=t.get("xlabel", "periodic phase θ (rad)"), row=2, col=1)
         apply_theme(fig, height=560)
         return fig
+    if name == "translational_equivariance":
+        all_e = np.asarray(t["energies_all"])  # (n_structures, num_steps)
+        fig = make_subplots(rows=2, cols=1, shared_xaxes=True, vertical_spacing=0.10)
+        fig.add_trace(go.Scatter(x=t["x"], y=t["energy"], mode="lines+markers", name="structure 0 E",
+                                 line=dict(color=EDITORIAL_8[0])), row=1, col=1)
+        for i, e in enumerate(all_e):
+            fig.add_trace(go.Scatter(x=t["x"], y=e - e.mean(), mode="lines", name=f"structure {i}",
+                                     line=dict(color=EDITORIAL_8[i % len(EDITORIAL_8)])), row=2, col=1)
+        fig.add_hline(y=0.0, line=dict(color="#B4B4B4", dash="dot"), row=2, col=1)
+        fig.update_yaxes(title_text="energy (eV)", row=1, col=1)
+        fig.update_yaxes(title_text="E − mean(E) (eV)", row=2, col=1)
+        fig.update_xaxes(title_text=t.get("xlabel", "translation phase θ (rad)"), row=2, col=1)
+        apply_theme(fig, height=560)
+        return fig
     if name == "nve_drift":
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=t["x"], y=t["drift_per_atom"], mode="lines",

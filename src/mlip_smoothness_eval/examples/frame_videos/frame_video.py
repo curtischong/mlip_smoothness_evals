@@ -6,7 +6,8 @@ traces out, so they animate naturally:
 - ``diatomic`` — pull a homonuclear dimer apart and watch the bond PEC,
 - ``displacement_scan`` — slide every atom along one random direction,
 - ``cutoff_smoothness`` — drag a single atom in a straight line,
-- ``boundary_crossing`` — drag one atom a full lattice vector across a cell face.
+- ``boundary_crossing`` — drag one atom a full lattice vector across a cell face,
+- ``translational_equivariance`` — slide a whole cell one lattice vector.
 
 The sibling ``# %%`` scripts in this folder (``diatomic.py``,
 ``displacement_scan.py``, ``cutoff.py``, ``boundary_crossing.py``) each import this module, so they all
@@ -30,6 +31,7 @@ from mlip_smoothness_eval.checks import (
     cutoff_smoothness,
     diatomic_smoothness,
     displacement_scan,
+    translational_equivariance,
 )
 from mlip_smoothness_eval.viz.gifs import make_gif
 
@@ -99,6 +101,27 @@ def boundary_result(model: object, state: SimState | None = None) -> CheckResult
 def boundary_curve_result(model: object, state: SimState | None = None) -> CheckResult:
     """Same crossing as ``boundary_result``, scored by the curve-smoothness metrics."""
     return boundary_crossing_curve_smoothness(model, state or dilute_crystal())
+
+
+def equivariance_states() -> list[SimState]:
+    """A few periodic Ar cells of differing size/rattle to score equivariance across."""
+    return [
+        dilute_crystal(),
+        structures.random_crystal("Ar", repeat=2, rattle=0.0, device=DEVICE, dtype=DTYPE),
+        structures.random_crystal("Ar", repeat=2, rattle=0.1, seed=1, device=DEVICE, dtype=DTYPE),
+    ]
+
+
+def equivariance_result(
+    model: object, states: list[SimState] | None = None
+) -> CheckResult:
+    """Rigidly translate each cell one lattice vector; the video shows the first one.
+
+    The energy of a translationally invariant model is flat across the whole
+    sweep, so the gif's curve should be a perfectly horizontal line while the
+    lattice slides through a full period.
+    """
+    return translational_equivariance(model, states or equivariance_states())
 
 
 def animate(

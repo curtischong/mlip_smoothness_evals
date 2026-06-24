@@ -16,6 +16,7 @@ from mlip_smoothness_eval.checks import (
     force_jacobian_asymmetry,
     nonconservativity,
     nve_energy_drift,
+    translational_equivariance,
 )
 
 
@@ -57,6 +58,14 @@ def test_boundary_crossing_smooth_and_periodic(lj_model, dilute_crystal):
     assert m["boundary_force_spike_ratio"] < 50.0, m
     # full-period translation returns to the identical configuration
     assert m["boundary_periodicity_error"] < 1e-6, m
+
+
+def test_translational_equivariance_is_flat(lj_model, crystal, dilute_crystal):
+    """Rigidly translating a periodic cell leaves a minimum-image LJ energy constant."""
+    m = translational_equivariance(lj_model, [crystal, dilute_crystal]).metrics
+    assert m["equivariance_energy_range_max"] < 1e-6, m
+    assert m["equivariance_force_dev_max"] < 1e-6, m
+    assert m["equivariance_periodicity_error_max"] < 1e-6, m
 
 
 def test_diatomic_single_well(lj_model):

@@ -12,6 +12,9 @@ from mlip_smoothness_eval.checks.displacement_scan import displacement_scan
 from mlip_smoothness_eval.checks.force_jacobian import force_jacobian_asymmetry
 from mlip_smoothness_eval.checks.nonconservativity import nonconservativity
 from mlip_smoothness_eval.checks.nve_drift import nve_energy_drift
+from mlip_smoothness_eval.checks.translational_equivariance import (
+    translational_equivariance,
+)
 
 __all__ = [
     "CheckResult",
@@ -25,4 +28,5 @@ __all__ = [
     "force_jacobian_asymmetry",
     "nonconservativity",
     "nve_energy_drift",
+    "translational_equivariance",
 ]

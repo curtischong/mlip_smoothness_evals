@@ -30,7 +30,8 @@ def test_curves_return_figures(lj_model, crystal):
     report = evaluate_smoothness(
         lj_model, structures=[crystal], diatomic_symbols=("O",), nve_steps=200
     )
-    for name in ("diatomic", "displacement_scan", "cutoff_smoothness", "nve_drift", "force_jacobian"):
+    for name in ("diatomic", "displacement_scan", "cutoff_smoothness", "nve_drift",
+                 "force_jacobian", "translational_equivariance"):
         fig = report.curve(name) if name != "diatomic" else report.curve(name, symbol="O")
         assert isinstance(fig, go.Figure)
 

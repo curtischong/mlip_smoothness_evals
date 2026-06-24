@@ -23,6 +23,7 @@ _SWEEP_CHECKS = {
     "cutoff_smoothness",
     "boundary_crossing",
     "boundary_crossing2",
+    "translational_equivariance",
 }
 
 _EMBER = "#C4650D"
